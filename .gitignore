@@ -9,5 +9,8 @@ wheels/
 # Github specific files
 .github/
 
+# Environment files
+.env
+
 # Virtual environments
 .venv
