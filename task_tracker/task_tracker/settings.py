@@ -1,3 +1,4 @@
+import datetime as dt
 import os
 from pathlib import Path
 
@@ -14,14 +15,14 @@ ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split("
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
-    "rest_framework",
-    "rest_framework.authtoken",
-    "djoser",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework_simplejwt",
     "tasks",
+    "api",
 ]
 
 MIDDLEWARE = [
@@ -86,3 +87,19 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": dt.timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": dt.timedelta(days=7),
+}
