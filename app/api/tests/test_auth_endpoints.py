@@ -16,6 +16,8 @@ def setup_test_user_creation_class(request, client, test_user_data):
 @pytest.mark.django_db
 @pytest.mark.usefixtures("setup_test_user_creation_class")
 class TestUserCreation:
+    """Test class for testing user creation endpoints."""
+
     register_url: str = reverse("api:register")
     client: Client
     user_data: dict[str, str]
@@ -93,6 +95,8 @@ def setup_login_test_class(request, client, test_login_credentials):
 @pytest.mark.django_db
 @pytest.mark.usefixtures("setup_login_test_class", "test_user")
 class TestUserLogin:
+    """Test class for testing user login endpoints."""
+
     login_url: str = reverse("api:login")
     tasks_url: str = reverse("api:tasks-list")
     client: Client
