@@ -42,6 +42,15 @@ def another_user_data(test_login_credentials) -> dict[str, str]:
 
 
 @pytest.fixture
+def assert_no_user_created(django_user_model):
+    initial_count = django_user_model.objects.count()
+    yield
+    assert django_user_model.objects.count() == initial_count, (
+        "User is created in db with invalid data"
+    )
+
+
+@pytest.fixture
 def test_user(django_user_model, test_user_data):
     return django_user_model.objects.create_user(**test_user_data)
 
