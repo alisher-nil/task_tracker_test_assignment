@@ -1,10 +1,7 @@
 import pytest
-from django.contrib.auth import get_user_model
 from django.test.client import Client
 from django.urls import reverse
 from rest_framework import status
-
-User = get_user_model()
 
 
 @pytest.fixture
