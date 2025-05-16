@@ -3,6 +3,7 @@ from typing import Generator, TypeVar
 import pytest
 from django.contrib.auth.models import AbstractBaseUser
 from django.test.client import Client
+from django.utils.module_loading import import_string
 from rest_framework_simplejwt.settings import api_settings
 
 User = TypeVar("User", bound=AbstractBaseUser)
@@ -63,9 +64,8 @@ def test_user(django_user_model, test_user_data) -> User:
 
 @pytest.fixture
 def authentication_token(test_user) -> str:
-    token = api_settings.TOKEN_OBTAIN_SERIALIZER.token_class.for_user(test_user)
-    print(token)
-    return token
+    TokenSerializer = import_string(api_settings.TOKEN_OBTAIN_SERIALIZER)
+    return TokenSerializer.get_token(test_user)
 
 
 @pytest.fixture
