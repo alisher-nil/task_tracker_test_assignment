@@ -12,7 +12,7 @@ User = get_user_model()
 
 
 # Since the assignment expects only one endpoint for login,
-# without refresh token, we will create a custom serializer
+# without refresh token, a custom serializer is created
 # that only returns the access token.
 class SimpleTokenObtainSerializer(TokenObtainSerializer):
     token_class = AccessToken
