@@ -30,12 +30,8 @@ class TasksViewSet(viewsets.ModelViewSet):
     filterset_fields = ["completed"]
     search_fields = ["title"]
 
-    def initial(self, request, *args, **kwargs):
-        super().initial(request, *args, **kwargs)
-        self.current_user = request.user
-
     def get_queryset(self):
-        return Task.objects.filter(owner=self.current_user)
+        return Task.objects.filter(owner=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.current_user)
+        serializer.save(owner=self.request.user)

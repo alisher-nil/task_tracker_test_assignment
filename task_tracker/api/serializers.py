@@ -14,7 +14,7 @@ User = get_user_model()
 
 # Since the assignment expects only one endpoint for login,
 # without refresh token, a custom serializer is created
-# that only returns the access token.
+# that returns only the access token.
 class SimpleTokenObtainSerializer(TokenObtainSerializer):
     token_class = AccessToken
 
@@ -59,15 +59,6 @@ class SignUpSerializer(UserBaseSerializer):
     class Meta:
         model = User
         fields = UserBaseSerializer.Meta.fields + ("password",)
-        extra_kwargs = {
-            "email": {"required": True},
-        }
-
-    def create(self, validated_data):
-        """
-        Create a new user with the provided validated data.
-        """
-        return User.objects.create_user(**validated_data)
 
 
 class TasksSerializer(serializers.ModelSerializer):
