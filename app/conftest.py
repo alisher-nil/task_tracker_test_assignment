@@ -1,4 +1,4 @@
-from typing import Generator, TypeVar
+from typing import TypeVar
 
 import pytest
 from django.contrib.auth.models import AbstractBaseUser
@@ -49,15 +49,6 @@ def another_user_data() -> dict[str, str]:
 
 
 @pytest.fixture
-def assert_no_user_created(django_user_model) -> Generator[None, None]:
-    initial_count = django_user_model.objects.count()
-    yield
-    assert django_user_model.objects.count() == initial_count, (
-        "User is created in db with invalid data"
-    )
-
-
-@pytest.fixture
 def test_user(django_user_model, test_user_data) -> User:
     return django_user_model.objects.create_user(**test_user_data)
 
@@ -72,3 +63,12 @@ def authentication_token(test_user) -> str:
 def authorized_client(client, authentication_token) -> Client:
     client.defaults["HTTP_AUTHORIZATION"] = f"Bearer {authentication_token}"
     return client
+
+
+@pytest.fixture
+def task_data() -> dict[str, str]:
+    return {
+        "title": "Test Task",
+        "description": "This is a test task.",
+        "completed": False,
+    }
