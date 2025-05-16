@@ -105,5 +105,5 @@ AUTH_USER_MODEL = "users.CustomUser"
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": dt.timedelta(days=1),
-    "REFRESH_TOKEN_LIFETIME": dt.timedelta(days=7),
+    "TOKEN_OBTAIN_SERIALIZER": "api.serializers.SimpleTokenObtainSerializer",
 }

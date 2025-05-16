@@ -1,24 +1,29 @@
+from typing import Any
+
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import update_last_login
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenObtainSerializer
+from rest_framework_simplejwt.settings import api_settings
+from rest_framework_simplejwt.tokens import AccessToken
 
 User = get_user_model()
 
 
-class EmailTokenObtainSerializer(TokenObtainPairSerializer):
-    """
-    Custom serializer for JWT token generation using email and password.
-    """
+# Since the assignment expects only one endpoint for login,
+# without refresh token, we will create a custom serializer
+# that only returns the access token.
+class SimpleTokenObtainSerializer(TokenObtainSerializer):
+    token_class = AccessToken
 
-    @classmethod
-    def get_token(cls, user):
-        """
-        Generate a JWT token for the given user.
-        """
-        token = super().get_token(user)
-        token["email"] = user.email
-        return token
+    def validate(self, attrs: dict[str, Any]) -> dict[str, str]:
+        data = super().validate(attrs)
+        token = self.get_token(self.user)
+        data["access_token"] = str(token)
+        if api_settings.UPDATE_LAST_LOGIN:
+            update_last_login(None, self.user)
+        return data
 
 
 class UserBaseSerializer(serializers.ModelSerializer):
