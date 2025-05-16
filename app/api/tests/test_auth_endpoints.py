@@ -1,3 +1,5 @@
+from typing import Generator
+
 import pytest
 from django.test.client import Client
 from django.urls import reverse
@@ -18,6 +20,14 @@ class TestUserCreation:
     register_url: str = reverse("api:register")
     client: Client
     user_data: dict[str, str]
+
+    @pytest.fixture
+    def assert_no_user_created(self, django_user_model) -> Generator[None, None]:
+        initial_count = django_user_model.objects.count()
+        yield
+        assert django_user_model.objects.count() == initial_count, (
+            "User is created in db with invalid data"
+        )
 
     def test_user_creation(self):
         """Test user creation with valid data."""
