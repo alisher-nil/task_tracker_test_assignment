@@ -61,6 +61,7 @@ class TestUserCreation:
     @pytest.mark.parametrize(
         "email",
         ["", "invalidemail.com", "user@.com", "NotAnEmail"],
+        ids=["empty", "no_at_symbol", "no_domain", "invalid_format"],
     )
     @pytest.mark.usefixtures("assert_no_user_created")
     def test_user_creation_with_invalid_email(self, email):
@@ -74,6 +75,7 @@ class TestUserCreation:
     @pytest.mark.parametrize(
         "password",
         ["", "short", "123", "password"],
+        ids=["empty", "too_short", "only_numbers", "common_password"],
     )
     @pytest.mark.usefixtures("assert_no_user_created")
     def test_user_creation_with_invalid_password(self, password):
