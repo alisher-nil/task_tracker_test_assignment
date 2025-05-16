@@ -21,8 +21,10 @@ class SimpleTokenObtainSerializer(TokenObtainSerializer):
         data = super().validate(attrs)
         token = self.get_token(self.user)
         data["access_token"] = str(token)
+
         if api_settings.UPDATE_LAST_LOGIN:
             update_last_login(None, self.user)
+
         return data
 
 
@@ -64,5 +66,4 @@ class SignUpSerializer(UserBaseSerializer):
         """
         Create a new user with the provided validated data.
         """
-        user = User.objects.create_user(**validated_data)
-        return user
+        return User.objects.create_user(**validated_data)
