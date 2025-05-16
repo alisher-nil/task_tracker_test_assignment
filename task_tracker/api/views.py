@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
-from rest_framework import status, views
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, status, views, viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from tasks.models import Task
 
-from .serializers import SignUpSerializer
+from .serializers import SignUpSerializer, TasksSerializer
 
 User = get_user_model()
 
@@ -20,3 +22,20 @@ class UserSignUpView(views.APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class TasksViewSet(viewsets.ModelViewSet):
+    serializer_class = TasksSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ["completed"]
+    search_fields = ["title"]
+
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        self.current_user = request.user
+
+    def get_queryset(self):
+        return Task.objects.filter(owner=self.current_user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.current_user)

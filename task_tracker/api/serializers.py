@@ -7,6 +7,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import AccessToken
+from tasks.models import Task
 
 User = get_user_model()
 
@@ -67,3 +68,24 @@ class SignUpSerializer(UserBaseSerializer):
         Create a new user with the provided validated data.
         """
         return User.objects.create_user(**validated_data)
+
+
+class TasksSerializer(serializers.ModelSerializer):
+    """
+    Serializer for task model.
+    """
+
+    owner = UserBaseSerializer(read_only=True)
+
+    class Meta:
+        model = Task
+        fields = (
+            "id",
+            "title",
+            "description",
+            "created_at",
+            "updated_at",
+            "completed",
+            "owner",
+        )
+        read_only_fields = ("id", "created_at", "updated_at", "owner")
