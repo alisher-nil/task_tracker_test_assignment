@@ -1,24 +1,56 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 User = get_user_model()
 
 
-class UserRegistrationSerializer(serializers.ModelSerializer):
+class EmailTokenObtainSerializer(TokenObtainPairSerializer):
+    """
+    Custom serializer for JWT token generation using email and password.
+    """
+
+    @classmethod
+    def get_token(cls, user):
+        """
+        Generate a JWT token for the given user.
+        """
+        token = super().get_token(user)
+        token["email"] = user.email
+        return token
+
+
+class UserBaseSerializer(serializers.ModelSerializer):
+    """
+    Base serializer for user model.
+    """
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "email",
+            "username",
+            "first_name",
+            "last_name",
+        )
+
+
+class SignUpSerializer(UserBaseSerializer):
     """
     Serializer for user registration.
     """
 
     password = serializers.CharField(
-        write_only=True,
         required=True,
+        write_only=True,
         validators=[validate_password],
     )
 
     class Meta:
         model = User
-        fields = ("username", "email", "password")
+        fields = UserBaseSerializer.Meta.fields + ("password",)
         extra_kwargs = {
             "email": {"required": True},
         }
