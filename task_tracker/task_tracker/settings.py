@@ -1,3 +1,4 @@
+import datetime as dt
 import os
 from pathlib import Path
 
@@ -18,7 +19,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_extensions",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "users",
     "tasks",
+    "api",
 ]
 
 MIDDLEWARE = [
@@ -83,3 +89,21 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+}
+
+AUTH_USER_MODEL = "users.CustomUser"
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": dt.timedelta(days=1),
+    "TOKEN_OBTAIN_SERIALIZER": "api.serializers.SimpleTokenObtainSerializer",
+}

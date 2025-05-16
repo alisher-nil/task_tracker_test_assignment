@@ -7,11 +7,7 @@ User = get_user_model()
 
 
 class Task(models.Model):
-    """
-    Model representing a task in the task tracker application.
-    Each task has a title, description, creation date, update date,
-    completion status, and an owner (user).
-    """
+    """Model representing a task in the task tracker application."""
 
     title = models.CharField(max_length=TITLE_FIELD_MAX_LENGTH)
     description = models.TextField(blank=True, default="")
@@ -25,5 +21,5 @@ class Task(models.Model):
         verbose_name = "Task"
         verbose_name_plural = "Tasks"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
