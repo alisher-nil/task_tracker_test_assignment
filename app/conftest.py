@@ -1,5 +1,11 @@
+from typing import Generator, TypeVar
+
 import pytest
-from django.urls import reverse
+from django.contrib.auth.models import AbstractBaseUser
+from django.test.client import Client
+from rest_framework_simplejwt.settings import api_settings
+
+User = TypeVar("User", bound=AbstractBaseUser)
 
 
 @pytest.fixture
@@ -31,7 +37,7 @@ def test_user_data(test_login_credentials) -> dict[str, str]:
 
 
 @pytest.fixture
-def another_user_data(test_login_credentials) -> dict[str, str]:
+def another_user_data() -> dict[str, str]:
     return {
         "email": "second@example.com",
         "password": "anotherpassword123",
@@ -42,7 +48,7 @@ def another_user_data(test_login_credentials) -> dict[str, str]:
 
 
 @pytest.fixture
-def assert_no_user_created(django_user_model):
+def assert_no_user_created(django_user_model) -> Generator[None, None]:
     initial_count = django_user_model.objects.count()
     yield
     assert django_user_model.objects.count() == initial_count, (
@@ -51,10 +57,18 @@ def assert_no_user_created(django_user_model):
 
 
 @pytest.fixture
-def test_user(django_user_model, test_user_data):
+def test_user(django_user_model, test_user_data) -> User:
     return django_user_model.objects.create_user(**test_user_data)
 
 
 @pytest.fixture
-def register_url() -> str:
-    return reverse("api:register")
+def authentication_token(test_user) -> str:
+    token = api_settings.TOKEN_OBTAIN_SERIALIZER.token_class.for_user(test_user)
+    print(token)
+    return token
+
+
+@pytest.fixture
+def authorized_client(client, authentication_token) -> Client:
+    client.defaults["HTTP_AUTHORIZATION"] = f"Bearer {authentication_token}"
+    return client
