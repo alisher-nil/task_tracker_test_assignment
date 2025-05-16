@@ -11,9 +11,23 @@ dependencies = [
     "django-filter >=25.1, <26.0",
     "psycopg[binary]>=3.2.9, <4.0",
     "python-dotenv>=1.1.0",
+    "pytest>=8.3.5",
+    "pytest-django>=4.11.1",
 ]
 
 [dependency-groups]
 dev = [
     "django-extensions>=4.1",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "task_tracker.settings"
+addopts = "-p no:warnings -p no:cacheprovider"
+pythonpath = [
+    "task_tracker",
+]
+python_files = [
+    "tests.py",
+    "test_*.py",
+    "*_tests.py",
 ]
