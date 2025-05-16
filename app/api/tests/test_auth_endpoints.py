@@ -98,7 +98,7 @@ class TestUserLogin:
     """Test class for testing user login endpoints."""
 
     login_url: str = reverse("api:login")
-    tasks_url: str = reverse("api:tasks-list")
+    protected_url: str = reverse("api:tasks-list")
     client: Client
     user_credentials: dict[str, str]
 
@@ -139,11 +139,13 @@ class TestUserLogin:
         """Test token authentication for accessing protected endpoints."""
 
         # Attempt to access the tasks endpoint without authentication
-        response = self.client.get(self.tasks_url)
+        response = self.client.get(self.protected_url)
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
         # Authenticate the user
         response = self.client.post(self.login_url, data=self.user_credentials)
         token = response.data["access_token"]
         # Use the token to access the tasks endpoint
-        response = self.client.get(self.tasks_url, HTTP_AUTHORIZATION=f"Bearer {token}")
+        response = self.client.get(
+            self.protected_url, HTTP_AUTHORIZATION=f"Bearer {token}"
+        )
         assert response.status_code == status.HTTP_200_OK
