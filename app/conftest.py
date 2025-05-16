@@ -42,7 +42,6 @@ def another_user_data(test_login_credentials) -> dict[str, str]:
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def test_user(django_user_model, test_user_data):
     return django_user_model.objects.create_user(**test_user_data)
 
