@@ -7,6 +7,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import AccessToken
+
 from tasks.models import Task
 
 User = get_user_model()
@@ -58,6 +59,13 @@ class SignUpSerializer(UserBaseSerializer):
     class Meta:
         model = User
         fields = UserBaseSerializer.Meta.fields + ("password",)
+
+    def create(self, validated_data):
+        password = validated_data.pop("password")
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
 
 
 class TasksSerializer(serializers.ModelSerializer):
