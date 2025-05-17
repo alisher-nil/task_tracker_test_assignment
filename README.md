@@ -83,6 +83,98 @@ All endpoints in the tasks section require authentication. Use the JWT token obt
 - Filter by completion: `GET /tasks/?completed=true` or `false`
 - Search by partial match in title: `GET /tasks/?search=keyword`
 
+## API Schema
+
+### Authentication Endpoints
+
+#### Register a new user
+- **URL**: `/api/auth/register/`
+- **Method**: `POST`
+- **Request Body**:
+  ```json
+  {
+    "username": "string",
+    "email": "user@example.com",
+    "password": "string"
+  }
+- Success Response: 201 Created
+- Error Response: 400 Bad Request
+
+#### Login
+- **URL**: /api/auth/login/
+- **Method**: POST
+- **Request Body**:
+  ```json
+  {
+    "email": "user@example.com",
+    "password": "string"
+  }
+  ```
+- **Success Response**:
+  ```json
+  {
+    "access": "string",
+  }
+  ```
+- **Error Response**: 401 Unauthorized
+
+### Task Endpoints
+
+#### Create a new task
+- **URL**: /api/tasks/
+- **Method**: POST
+- **Auth Required**: Yes (Bearer Token)
+- **Request Body**:
+  ```json
+  {
+    "title": "string",
+    "description": "string", // optional
+    "completed": false // optional
+  }
+  ```
+- **Success Response**: 201 Created
+- **Error Response**: 400 Bad Request
+
+#### List tasks
+- **URL**: /api/tasks/
+- **Method**: GET
+- **Auth Required**: Yes (Bearer Token)
+- **Query Parameters**:
+  - page: Page number for pagination
+  - completed: Filter by completion status (true/false)
+  - search: Search in title
+- **Success Response**: 200 OK
+- **Error Response**: 404 Not Found
+
+#### Get task details
+- **URL**: /api/tasks/{id}/
+- **Method**: GET
+- **Auth Required**: Yes (Bearer Token)
+- **Success Response**: 200 OK
+- **Error Response**: 404 Not Found
+
+#### Update a task
+- **URL**: /api/tasks/{id}/
+- **Method**: PUT
+- **Auth Required**: Yes (Bearer Token)
+- **Request Body**:
+  ```json
+  {
+    "title": "string",
+    "description": "string", // optional
+    "completed": false // optional
+  }
+  ```
+- **Success Response**: 200 OK
+- **Error Responses**: 400 Bad Request, 404 Not Found
+
+#### Delete a task
+- **URL**: /api/tasks/{id}/
+- **Method**: DELETE
+- **Auth Required**: Yes (Bearer Token)
+- **Success Response**: 204 No Content
+- **Error Response**: 404 Not Found
+
 ## Development
 ### Setup
 Create a virtual environment and install dependencies:
@@ -101,7 +193,7 @@ To run the development server, use:
 python app/manage.py runserver
 ```
 
-### Running Tests
+## Running Tests
 For local testing PostgreSQL server is required. You can run one with provided Docker Compose file in `infra` directory:
 ```bash
 docker-compose -f infra/docker-compose.local.yml up -d
