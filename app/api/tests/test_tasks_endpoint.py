@@ -9,7 +9,7 @@ from rest_framework.settings import api_settings
 from tasks.models import Task
 
 
-class TestTasks:
+class TestTasksBase:
     """Test class for testing task-related endpoints."""
 
     tasks_url_path = "api:tasks-list"
@@ -60,6 +60,11 @@ class TestTasks:
             completed=False,
             owner=another_user,
         )
+
+
+@pytest.mark.django_db
+class TestTasksSuccess(TestTasksBase):
+    """Test class for testing task-related endpoints with valid requests."""
 
     def test_create_task(self, authorized_client, test_user, task_data):
         """Test task creation with valid data."""
@@ -120,7 +125,7 @@ class TestTasks:
 
 
 @pytest.mark.django_db
-class TestInvalidTaskCreation(TestTasks):
+class TestInvalidTaskCreation(TestTasksBase):
     """Test class for testing task-related endpoints with bad requests."""
 
     @pytest.fixture
@@ -159,7 +164,7 @@ class TestInvalidTaskCreation(TestTasks):
         assert bool(response.data[missing_field]) is False
 
 
-class TestListTasks(TestTasks):
+class TestListTasks(TestTasksBase):
     """Test class for testing task listing endpoints."""
 
     @pytest.mark.usefixtures("multiple_tasks")
@@ -204,8 +209,24 @@ class TestListTasks(TestTasks):
         assert len(response.data["results"]) == 1
         assert response.data["results"][0]["id"] == test_task.id
 
+    def test_user_tasks_visibility(
+        self,
+        authorized_client,
+        another_user_task,
+        test_task,
+    ):
+        """Test that a user can't see another user's tasks."""
+        response = authorized_client.get(reverse(self.tasks_url_path))
+        assert response.status_code == status.HTTP_200_OK
+        assert isinstance(response.data["results"], list)
+        assert len(response.data["results"]) == 1
+        assert response.data["results"][0]["id"] == test_task.id
+        assert another_user_task.id not in [
+            task["id"] for task in response.data["results"]
+        ]
 
-class TestUnauthorizedAccess(TestTasks):
+
+class TestUnauthorizedAccess(TestTasksBase):
     """Test class for testing unauthorized access to task-related endpoints."""
 
     def test_create_task_unauthorized(self, client, task_data):
@@ -249,7 +270,7 @@ class TestUnauthorizedAccess(TestTasks):
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-class TestTaskPermissions(TestTasks):
+class TestTaskPermissions(TestTasksBase):
     def test_cannot_edit_others_tasks(
         self,
         another_user_task,
@@ -271,18 +292,9 @@ class TestTaskPermissions(TestTasks):
         )
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
-    def test_user_tasks_visibility(
-        self,
-        authorized_client,
-        another_user_task,
-        test_task,
-    ):
-        """Test that a user can't see another user's tasks."""
-        response = authorized_client.get(reverse(self.tasks_url_path))
-        assert response.status_code == status.HTTP_200_OK
-        assert isinstance(response.data["results"], list)
-        assert len(response.data["results"]) == 1
-        assert response.data["results"][0]["id"] == test_task.id
-        assert another_user_task.id not in [
-            task["id"] for task in response.data["results"]
-        ]
+    def test_cannot_get_others_tasks(self, another_user_task, authorized_client):
+        """Test that another user cannot get a task."""
+        response = authorized_client.get(
+            reverse(self.tasks_url_detail_path, args=[another_user_task.id]),
+        )
+        assert response.status_code == status.HTTP_404_NOT_FOUND
