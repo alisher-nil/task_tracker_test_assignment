@@ -21,3 +21,6 @@ wheels/
 # database files
 *.db
 *.sqlite3
+
+# static files
+staticfiles/
