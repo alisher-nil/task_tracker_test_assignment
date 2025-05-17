@@ -7,7 +7,20 @@ wheels/
 *.egg-info
 
 # Github specific files
-.github/
+.github/instructions/
+
+# IDE specific files
+.vscode/
+
+# Environment files
+.env
 
 # Virtual environments
 .venv
+
+# database files
+*.db
+*.sqlite3
+
+# static files
+static/

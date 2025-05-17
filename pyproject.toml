@@ -3,5 +3,32 @@ name = "task-tracker-test-assignment"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = []
+requires-python = ">=3.13"
+dependencies = [
+    "django>=5.2.1, <6.0",
+    "djangorestframework>=3.16.0, <4.0",
+    "djangorestframework-simplejwt[crypto]>=5.5.0",
+    "django-filter >=25.1, <26.0",
+    "psycopg[binary]>=3.2.9, <4.0",
+    "python-dotenv>=1.1.0",
+    "pytest>=8.3.5",
+    "pytest-django>=4.11.1",
+    "gunicorn>=23.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "django-extensions>=4.1",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "task_tracker.settings"
+addopts = "-vv"
+pythonpath = [
+    "app",
+]
+python_files = [
+    "tests.py",
+    "test_*.py",
+    "*_tests.py"
+]
