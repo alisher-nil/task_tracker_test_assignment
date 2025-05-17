@@ -6,8 +6,6 @@ from django.test.client import Client
 from django.utils.module_loading import import_string
 from rest_framework_simplejwt.settings import api_settings
 
-from tasks.models import Task
-
 User = TypeVar("User", bound=AbstractBaseUser)
 
 
