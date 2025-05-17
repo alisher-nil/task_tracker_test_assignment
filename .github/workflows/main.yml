@@ -1,4 +1,4 @@
-name: Testing on main branch
+name: Testing workflow
 
 on:
   push:
