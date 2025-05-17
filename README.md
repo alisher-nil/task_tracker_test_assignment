@@ -167,6 +167,20 @@ All endpoints in the tasks section require authentication. Use the JWT token obt
   ```
 - **Success Response**: 200 OK
 - **Error Responses**: 400 Bad Request, 404 Not Found
+#### Partially update a task
+- **URL**: /api/tasks/{id}/
+- **Method**: PATCH
+- **Auth Required**: Yes (Bearer Token)
+- **Request Body**:
+  ```json
+  {
+    "title": "string", // optional
+    "description": "string", // optional
+    "completed": false // optional
+  }
+  ```
+- **Success Response**: 200 OK
+- **Error Responses**: 400 Bad Request, 404 Not Found
 
 #### Delete a task
 - **URL**: /api/tasks/{id}/
