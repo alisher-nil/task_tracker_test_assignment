@@ -9,6 +9,9 @@ wheels/
 # Github specific files
 .github/
 
+# IDE specific files
+.vscode/
+
 # Environment files
 .env
 
