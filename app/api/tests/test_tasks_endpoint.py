@@ -41,6 +41,26 @@ class TestTasks:
             owner=test_user,
         )
 
+    @pytest.fixture
+    def multiple_tasks(self, test_user):
+        page_size = api_settings.PAGE_SIZE
+        for i in range(page_size + 1):
+            self.model_class.objects.create(
+                title=f"Task {i + 1}",
+                description=f"Description for task {i + 1}",
+                completed=False,
+                owner=test_user,
+            )
+
+    @pytest.fixture
+    def another_user_task(self, another_user):
+        return self.model_class.objects.create(
+            title="Another User's Task",
+            description="This task belongs to another user.",
+            completed=False,
+            owner=another_user,
+        )
+
     def test_create_task(self, authorized_client, test_user, task_data):
         """Test task creation with valid data."""
         response = authorized_client.post(reverse(self.tasks_url_path), data=task_data)
@@ -142,26 +162,6 @@ class TestInvalidTaskCreation(TestTasks):
 class TestListTasks(TestTasks):
     """Test class for testing task listing endpoints."""
 
-    @pytest.fixture
-    def multiple_tasks(self, test_user):
-        page_size = api_settings.PAGE_SIZE
-        for i in range(page_size + 1):
-            self.model_class.objects.create(
-                title=f"Task {i + 1}",
-                description=f"Description for task {i + 1}",
-                completed=False,
-                owner=test_user,
-            )
-
-    @pytest.fixture
-    def another_user_task(self, another_user):
-        return self.model_class.objects.create(
-            title="Another User's Task",
-            description="This task belongs to another user.",
-            completed=False,
-            owner=another_user,
-        )
-
     @pytest.mark.usefixtures("multiple_tasks")
     def test_pagination(self, authorized_client):
         """Test task listing with pagination."""
@@ -173,22 +173,6 @@ class TestListTasks(TestTasks):
         assert isinstance(response.data["results"], list)
         assert objects_count > api_settings.PAGE_SIZE
         assert len(response.data["results"]) == api_settings.PAGE_SIZE
-
-    def test_user_cant_see_another_user_tasks(
-        self,
-        authorized_client,
-        another_user_task,
-        test_task,
-    ):
-        """Test that a user can't see another user's tasks."""
-        response = authorized_client.get(reverse(self.tasks_url_path))
-        assert response.status_code == status.HTTP_200_OK
-        assert isinstance(response.data["results"], list)
-        assert len(response.data["results"]) == 1
-        assert response.data["results"][0]["id"] == test_task.id
-        assert another_user_task.id not in [
-            task["id"] for task in response.data["results"]
-        ]
 
     @pytest.mark.usefixtures("multiple_tasks")
     def test_filters_by_title(self, authorized_client, test_task):
@@ -263,3 +247,42 @@ class TestUnauthorizedAccess(TestTasks):
             reverse(self.tasks_url_detail_path, args=[test_task.id])
         )
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+class TestTaskPermissions(TestTasks):
+    def test_cannot_edit_others_tasks(
+        self,
+        another_user_task,
+        authorized_client,
+        update_task_data,
+    ):
+        """Test that another user cannot update a task."""
+        response = authorized_client.patch(
+            reverse(self.tasks_url_detail_path, args=[another_user_task.id]),
+            data=update_task_data,
+            content_type="application/json",
+        )
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+
+    def test_cannot_delete_others_tasks(self, another_user_task, authorized_client):
+        """Test that another user cannot delete a task."""
+        response = authorized_client.delete(
+            reverse(self.tasks_url_detail_path, args=[another_user_task.id])
+        )
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+
+    def test_user_tasks_visibility(
+        self,
+        authorized_client,
+        another_user_task,
+        test_task,
+    ):
+        """Test that a user can't see another user's tasks."""
+        response = authorized_client.get(reverse(self.tasks_url_path))
+        assert response.status_code == status.HTTP_200_OK
+        assert isinstance(response.data["results"], list)
+        assert len(response.data["results"]) == 1
+        assert response.data["results"][0]["id"] == test_task.id
+        assert another_user_task.id not in [
+            task["id"] for task in response.data["results"]
+        ]
