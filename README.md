@@ -1,3 +1,5 @@
+[![Testing workflow](https://github.com/alisher-nil/task_tracker_test_assignment/actions/workflows/main.yml/badge.svg)](https://github.com/alisher-nil/task_tracker_test_assignment/actions/workflows/main.yml)
+
 # Task Tracker API
 
 A simple task tracking API built with Django 5 and Django Rest Framework. This project was developed as a test assignment for a Python developer position.
@@ -100,4 +102,4 @@ pytest
 
 ## CI/CD
 
-This project uses GitHub Actions for continuous integration and deployment. Check the `.github/workflows` directory for the configuration.
+The project uses GitHub Actions to automate testing. Check the `.github/workflows` directory for the configuration.
