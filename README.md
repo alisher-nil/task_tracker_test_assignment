@@ -1,4 +1,15 @@
 [![Testing workflow](https://github.com/alisher-nil/task_tracker_test_assignment/actions/workflows/main.yml/badge.svg)](https://github.com/alisher-nil/task_tracker_test_assignment/actions/workflows/main.yml)
+![Last Commit](https://img.shields.io/github/last-commit/alisher-nil/task_tracker_test_assignment)
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+![Django](https://img.shields.io/badge/Django-092E20?style=flat&logo=django&logoColor=white)
+![Django Rest Framework](https://img.shields.io/badge/Django%20Rest%20Framework-FF8C00?style=flat&logo=django&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=flat&logo=postgresql&logoColor=white)
+![pytest](https://img.shields.io/badge/pytest-DAA520?style=flat&logo=pytest&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=flat&logo=githubactions&logoColor=white)
+![uv](https://img.shields.io/badge/uv-000000?style=flat&logo=uv&logoColor=white)
+![Ruff](https://img.shields.io/badge/Ruff-000000?style=flat&logo=ruff&logoColor=white)
 
 # Task Tracker API
 
