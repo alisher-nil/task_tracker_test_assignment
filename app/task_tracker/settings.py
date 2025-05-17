@@ -67,8 +67,8 @@ WSGI_APPLICATION = "task_tracker.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB", "task_tracker"),
-        "USER": os.getenv("POSTGRES_USER", "task_tracker_user"),
+        "NAME": os.getenv("POSTGRES_DB", ""),
+        "USER": os.getenv("POSTGRES_USER", ""),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),
         "HOST": os.getenv("DB_HOST", ""),
         "PORT": os.getenv("DB_PORT", 5432),
