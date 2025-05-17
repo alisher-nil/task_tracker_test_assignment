@@ -6,6 +6,8 @@ from django.test.client import Client
 from django.utils.module_loading import import_string
 from rest_framework_simplejwt.settings import api_settings
 
+from tasks.models import Task
+
 User = TypeVar("User", bound=AbstractBaseUser)
 
 
@@ -40,12 +42,17 @@ def test_user_data(test_login_credentials) -> dict[str, str]:
 @pytest.fixture
 def another_user_data() -> dict[str, str]:
     return {
-        "email": "second@example.com",
+        "email": "another@example.com",
         "password": "anotherpassword123",
         "username": "anotheruser",
         "first_name": "Another",
         "last_name": "User",
     }
+
+
+@pytest.fixture
+def another_user(django_user_model, another_user_data):
+    return django_user_model.objects.create_user(**another_user_data)
 
 
 @pytest.fixture
@@ -63,12 +70,3 @@ def authentication_token(test_user) -> str:
 def authorized_client(client, authentication_token) -> Client:
     client.defaults["HTTP_AUTHORIZATION"] = f"Bearer {authentication_token}"
     return client
-
-
-@pytest.fixture
-def task_data() -> dict[str, str]:
-    return {
-        "title": "Test Task",
-        "description": "This is a test task.",
-        "completed": False,
-    }
