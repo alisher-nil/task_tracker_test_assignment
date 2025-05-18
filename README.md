@@ -193,7 +193,7 @@ All endpoints in the tasks section require authentication. Use the JWT token obt
 ### Setup
 Create a virtual environment and install dependencies:
 ```
-python -m venv .venv
+python3 -m venv .venv, # On Windows use `py -m venv .venv`
 source .venv/bin/activate # On Windows use `.venv\Scripts\activate`
 pip install -r app/requirements.txt
 ```
