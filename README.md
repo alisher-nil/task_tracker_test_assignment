@@ -59,7 +59,7 @@ A simple task tracking API built with Django 5 and Django Rest Framework. This p
    docker-compose up --build -d
    ```
 
-4. Access the API at `http://localhost:8000/api/`
+4. Access the API at `http://localhost/api/`
 
 ## API Documentation
 All the API endpoints are relative to `/api/`.
@@ -202,17 +202,20 @@ or using `uv`:
 uv sync
 ```
 ### Running the Development Server
+The project requires a PostgreSQL server. For local development, you can run one in a container with provided docker compose file in `infra` directory:
+```bash
+docker-compose -f infra/docker-compose.local.yml up -d
+```
+
 To run the development server, use:
 ```bash
+python app/manage.py migrate
 python app/manage.py runserver
 ```
 
 ## Running Tests
-For local testing PostgreSQL server is required. You can run one with provided Docker Compose file in `infra` directory:
-```bash
-docker-compose -f infra/docker-compose.local.yml up -d
-```
-With the container running, you can run the tests:
+
+With the database container running, you can run the tests:
 ```bash
 pytest
 ```
