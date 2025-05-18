@@ -11,7 +11,7 @@
 ![uv](https://img.shields.io/badge/uv-000000?style=flat&logo=uv&logoColor=white)
 ![Ruff](https://img.shields.io/badge/Ruff-000000?style=flat&logo=ruff&logoColor=white)
 
-# Task Tracker API
+# ToDo List API
 
 A simple task tracking API built with Django 5 and Django Rest Framework. This project was developed as a test assignment for a Python developer position.
 
